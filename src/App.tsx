@@ -1,9 +1,9 @@
-import './App.css';
+import { AppView } from './components/AppView/AppView';
 
-function App() {
+export const App: React.FC = () => {
   return (
     <div className="App">
-
+      <AppView />
     </div>
   );
 }
