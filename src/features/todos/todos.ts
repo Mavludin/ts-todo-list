@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { RootState } from '../../app/store';
 
-interface ITodo {
+export interface ITodo {
   id: number;
   title: string;
 }
