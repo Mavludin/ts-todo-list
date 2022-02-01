@@ -21,6 +21,15 @@
         "@typescript-eslint"
     ],
     "rules": {
+        "no-param-reassign": [
+            "error",
+            {
+                "props": true,
+                "ignorePropertyModificationsFor": [
+                    "state"
+                ]
+            }
+        ],
         "react/react-in-jsx-scope": "off",
         "react/function-component-definition": "off",
         "import/prefer-default-export": "off",
