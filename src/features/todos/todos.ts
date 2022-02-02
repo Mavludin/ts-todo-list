@@ -1,4 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { RootState } from '../../app/store';
 
 export interface ITodo {
@@ -43,7 +44,7 @@ export const todosSlice = createSlice({
         (todo) => todo.id !== action.payload.id,
       );
     },
-    deleteMultipleTodos: (state, action: PayloadAction<number[]>) => {
+    deleteMultipleTodos: (state, action: PayloadAction<CheckboxValueType[]>) => {
       state.todos = [...state.todos].filter(
         (item) => item.id !== action.payload.find((num) => num === item.id),
       );
