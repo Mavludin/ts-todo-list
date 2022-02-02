@@ -1,10 +1,11 @@
+import { FC } from 'react';
 import { AddForm } from './AddForm/AddForm';
-import { TodoList } from './TodoList/TodoList';
+import { TodoListLayout } from './TodoListLayout/TodoListLayout';
 
-export const AppView: React.FC = () => (
+export const AppView: FC = () => (
   <main>
     <h1>Список задач</h1>
     <AddForm />
-    <TodoList />
+    <TodoListLayout />
   </main>
 );

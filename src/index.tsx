@@ -1,8 +1,10 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import 'antd/dist/antd.css';
+import ru_RU from 'antd/lib/locale/ru_RU';
 import './index.css';
 import { Provider } from 'react-redux';
+import { ConfigProvider } from 'antd';
 import { App } from './App';
 import reportWebVitals from './reportWebVitals';
 import { store } from './app/store';
@@ -10,7 +12,9 @@ import { store } from './app/store';
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <ConfigProvider locale={ru_RU}>
+        <App />
+      </ConfigProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root'),
