@@ -1,25 +1,33 @@
-import {
-  ChangeEvent, FC, FormEvent, useState,
-} from 'react';
+import { FC, FormEvent, useRef } from 'react';
+import { useSelector } from 'react-redux';
+import { useAppDispatch } from '../../../app/hooks';
+import { addSingleTodo, selectTodos } from '../../../features/todos/todos';
 import styles from './AddForm.module.css';
 
 export const AddForm: FC = () => {
-  const [inputValue, setInputValue] = useState<string>('');
+  const inputEl = useRef<HTMLInputElement>(null);
+  const dispatch = useAppDispatch();
+  const todos = useSelector(selectTodos);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-  };
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement>) => setInputValue(e.target.value);
+    if (inputEl.current) {
+      dispatch(addSingleTodo({
+        id: todos.length + 1,
+        title: inputEl.current.value,
+      }));
+      inputEl.current.value = '';
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit} className={styles.addForm}>
       <input
+        ref={inputEl}
         required
         type="text"
         placeholder="Новый элемент списка"
-        value={inputValue}
-        onChange={handleChange}
       />
       <button type="submit">Добавить</button>
     </form>
