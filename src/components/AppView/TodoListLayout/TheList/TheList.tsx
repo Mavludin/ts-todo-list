@@ -4,7 +4,7 @@ import {
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
 import {
-  List, Checkbox, Modal,
+  List, Checkbox, Modal, Button,
 } from 'antd';
 import { DeleteFilled, ExclamationCircleOutlined } from '@ant-design/icons';
 import styles from './TheList.module.css';
@@ -54,35 +54,39 @@ export const TheList: FC<IProps> = ({ checkBoxValues, setCheckBoxValues }) => {
 
   return (
     <div className={styles.listWrapper}>
-      <Checkbox indeterminate={indeterminate} onChange={onCheckAllChange} checked={checkAll}>
+      <Checkbox
+        indeterminate={indeterminate}
+        onChange={onCheckAllChange}
+        checked={checkAll}
+      >
         Выделить все
       </Checkbox>
-      <Checkbox.Group
-        className={styles.checkboxWrapper}
-        value={checkBoxValues}
-        onChange={handleCheckBoxChange}
+
+      <List
+        size="small"
+        bordered
+        className={styles.content}
       >
-        <List
-          size="small"
-          bordered
-          className={styles.content}
-          dataSource={todos}
-          renderItem={(todo) => (
-            <List.Item
-              actions={[
+        <Checkbox.Group
+          className={styles.checkboxWrapper}
+          value={checkBoxValues}
+          onChange={handleCheckBoxChange}
+        >
+          {
+            todos.map((todo) => (
+              <List.Item key={todo.id}>
+                <Checkbox value={todo.id}>
+                  {todo.title}
+                </Checkbox>
                 <DeleteFilled
                   className={styles.deleteBtn}
                   onClick={() => handleSingleItemDeletion(todo)}
-                />,
-              ]}
-            >
-              <Checkbox value={todo.id}>
-                {todo.title}
-              </Checkbox>
-            </List.Item>
-          )}
-        />
-      </Checkbox.Group>
+                />
+              </List.Item>
+            ))
+          }
+        </Checkbox.Group>
+      </List>
     </div>
   );
 };
