@@ -2,13 +2,13 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { RootState } from '../../app/store';
 
-export interface ITodo {
+export type TodoItem = {
   id: number;
   title: string;
 }
 
-interface TodosState {
-  todos: Array<ITodo>;
+type TodosState = {
+  todos: Array<TodoItem>;
 }
 
 const initialState: TodosState = {
@@ -36,10 +36,10 @@ export const todosSlice = createSlice({
   name: 'todos',
   initialState,
   reducers: {
-    addSingleTodo: (state, action: PayloadAction<ITodo>) => {
+    addSingleTodo: (state, action: PayloadAction<TodoItem>) => {
       state.todos = [...state.todos, action.payload];
     },
-    deleteSingleTodo: (state, action: PayloadAction<ITodo>) => {
+    deleteSingleTodo: (state, action: PayloadAction<TodoItem>) => {
       state.todos = [...state.todos].filter(
         (todo) => todo.id !== action.payload.id,
       );

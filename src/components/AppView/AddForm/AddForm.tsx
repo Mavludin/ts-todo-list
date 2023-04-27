@@ -1,15 +1,17 @@
-import { FC, FormEvent, useRef } from 'react';
+import { FormEvent, useCallback, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '../../../app/hooks';
 import { addSingleTodo, selectTodos } from '../../../features/todos/todos';
 import styles from './AddForm.module.css';
 
-export const AddForm: FC = () => {
-  const inputEl = useRef<HTMLInputElement>(null);
+export const AddForm = () => {
   const dispatch = useAppDispatch();
+
+  const inputEl = useRef<HTMLInputElement>(null);
+
   const todos = useSelector(selectTodos);
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = useCallback((e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (inputEl.current) {
@@ -19,7 +21,7 @@ export const AddForm: FC = () => {
       }));
       inputEl.current.value = '';
     }
-  };
+  }, [dispatch, todos.length]);
 
   return (
     <form onSubmit={handleSubmit} className={styles.addForm}>

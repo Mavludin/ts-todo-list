@@ -1,48 +1,43 @@
 import {
-  Dispatch, FC, SetStateAction, useState,
+  Dispatch, useCallback, SetStateAction, useState,
 } from 'react';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
 import { CheckboxChangeEvent } from 'antd/lib/checkbox';
-import {
-  List, Checkbox, Modal, Button,
-} from 'antd';
-import { DeleteFilled, ExclamationCircleOutlined } from '@ant-design/icons';
+import { List, Checkbox } from 'antd';
+import { DeleteFilled } from '@ant-design/icons';
 import styles from './TheList.module.css';
 import { useAppDispatch, useAppSelector } from '../../../../app/hooks';
 import {
+  TodoItem,
   deleteSingleTodo,
-  ITodo,
   selectTodos,
 } from '../../../../features/todos/todos';
+import { handleTodoDeletion } from '../../../../helpers/handleTodoDeletion';
 
-interface IProps {
+type Props = {
   checkBoxValues: CheckboxValueType[];
   setCheckBoxValues: Dispatch<SetStateAction<CheckboxValueType[]>>;
-}
+};
 
-const { confirm } = Modal;
-
-export const TheList: FC<IProps> = ({ checkBoxValues, setCheckBoxValues }) => {
-  const todos = useAppSelector(selectTodos);
+export const TheList = ({ checkBoxValues, setCheckBoxValues }: Props) => {
   const dispatch = useAppDispatch();
 
-  const handleSingleItemDeletion = (todo: ITodo) => {
-    confirm({
-      title: 'Вы уверены, что хотите удалить данный элемент?',
-      icon: <ExclamationCircleOutlined />,
-      okType: 'danger',
-      onOk() {
-        dispatch(deleteSingleTodo(todo));
-      },
-    });
-  };
+  const [indeterminate, setIndeterminate] = useState(true);
+  const [checkAll, setCheckAll] = useState(false);
 
-  const [indeterminate, setIndeterminate] = useState<boolean>(true);
-  const [checkAll, setCheckAll] = useState<boolean>(false);
+  const todos = useAppSelector(selectTodos);
+
+  const handleSingleItemDeletion = useCallback((todo: TodoItem) => {
+    handleTodoDeletion(() => {
+      dispatch(deleteSingleTodo(todo));
+    });
+  }, [dispatch]);
 
   const handleCheckBoxChange = (checkedValues: CheckboxValueType[]) => {
     setCheckBoxValues(checkedValues);
-    setIndeterminate(!!checkedValues.length && checkedValues.length < todos.length);
+    setIndeterminate(
+      !!checkedValues.length && checkedValues.length < todos.length,
+    );
     setCheckAll(checkedValues.length === todos.length);
   };
 
@@ -62,29 +57,21 @@ export const TheList: FC<IProps> = ({ checkBoxValues, setCheckBoxValues }) => {
         Выделить все
       </Checkbox>
 
-      <List
-        size="small"
-        bordered
-        className={styles.content}
-      >
+      <List size="small" bordered className={styles.content}>
         <Checkbox.Group
           className={styles.checkboxWrapper}
           value={checkBoxValues}
           onChange={handleCheckBoxChange}
         >
-          {
-            todos.map((todo) => (
-              <List.Item key={todo.id}>
-                <Checkbox value={todo.id}>
-                  {todo.title}
-                </Checkbox>
-                <DeleteFilled
-                  className={styles.deleteBtn}
-                  onClick={() => handleSingleItemDeletion(todo)}
-                />
-              </List.Item>
-            ))
-          }
+          {todos.map((todo) => (
+            <List.Item key={todo.id}>
+              <Checkbox value={todo.id}>{todo.title}</Checkbox>
+              <DeleteFilled
+                className={styles.deleteBtn}
+                onClick={() => handleSingleItemDeletion(todo)}
+              />
+            </List.Item>
+          ))}
         </Checkbox.Group>
       </List>
     </div>

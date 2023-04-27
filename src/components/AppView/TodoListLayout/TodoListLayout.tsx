@@ -1,33 +1,32 @@
-import { FC, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { CheckboxValueType } from 'antd/lib/checkbox/Group';
-import {
-  Divider, Alert, Button, Modal,
-} from 'antd';
-import { ExclamationCircleOutlined } from '@ant-design/icons';
+import { Divider, Alert, Button } from 'antd';
 import styles from './TodoListLayout.module.css';
 
 import { TheList } from './TheList/TheList';
-import { deleteMultipleTodos, selectTodos } from '../../../features/todos/todos';
+import {
+  deleteMultipleTodos,
+  selectTodos,
+} from '../../../features/todos/todos';
 import { useAppDispatch, useAppSelector } from '../../../app/hooks';
+import { handleTodoDeletion } from '../../../helpers/handleTodoDeletion';
 
-const { confirm } = Modal;
-
-export const TodoListLayout: FC = () => {
-  const todos = useAppSelector(selectTodos);
+export const TodoListLayout = () => {
   const dispatch = useAppDispatch();
+
+  const todos = useAppSelector(selectTodos);
+
   const [checkBoxValues, setCheckBoxValues] = useState<CheckboxValueType[]>([]);
 
-  const handleMultipleItemDeletion = (list: CheckboxValueType[]) => {
-    confirm({
-      title: 'Вы уверены, что хотите удалить данный элемент?',
-      icon: <ExclamationCircleOutlined />,
-      okType: 'danger',
-      onOk() {
-        dispatch(deleteMultipleTodos(list));
+  const handleMultipleItemDeletion = useCallback(
+    () => {
+      handleTodoDeletion(() => {
+        dispatch(deleteMultipleTodos(checkBoxValues));
         setCheckBoxValues([]);
-      },
-    });
-  };
+      });
+    },
+    [checkBoxValues, dispatch],
+  );
 
   return (
     <section className={styles.todoList}>
@@ -47,7 +46,7 @@ export const TodoListLayout: FC = () => {
       )}
       {checkBoxValues.length > 0 && (
         <Button
-          onClick={() => handleMultipleItemDeletion(checkBoxValues)}
+          onClick={handleMultipleItemDeletion}
           className={styles.dangerBtn}
           danger
           type="primary"
